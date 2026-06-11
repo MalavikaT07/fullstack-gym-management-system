@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iron Pulse - Elite Management Login</title>
+    <!-- Google Fonts: Space Grotesk for display / headings, Inter for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        :root {
+            --bg-color-main: #06090c;
+            --bg-color-card: rgba(10, 15, 20, 0.75);
+            --bg-color-card-solid: #0d1216;
+            --neon-green: #3bf00b;
+            --text-muted-gray: #8f9ca9;
+            --text-heading: #ffffff;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --input-bg: #090e12;
+            --input-border: rgba(255, 255, 255, 0.12);
+        }
+
+        body {
+            background-color: var(--bg-color-main);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Ambient neon glows matching the image */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 5%;
+            width: 350px;
+            height: 350px;
+            background: rgba(59, 240, 11, 0.08);
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            bottom: 10%;
+            right: 5%;
+            width: 400px;
+            height: 400px;
+            background: rgba(59, 240, 11, 0.05);
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .space-grotesk {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+            /* Split screen styling */
+            .glass-panel {
+                background: var(--bg-color-card);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid var(--border-color);
+                border-radius: 1.5rem;
+            }
+
+        /* Custom decorative neon pulse line */
+        .neon-divider-glowing {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, transparent 0%, var(--neon-green) 50%, transparent 100%);
+            box-shadow: 0 0 15px var(--neon-green);
+        }
+
+        /* Features style custom list */
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.75rem;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-item:hover {
+            transform: translateX(6px);
+        }
+
+        .feature-icon-wrapper {
+            background-color: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            min-width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1.1rem;
+            color: var(--neon-green);
+            font-size: 1.2rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 0.15rem;
+        }
+
+        .feature-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted-gray);
+        }
+
+        /* Testimonial card */
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-top: 3rem;
+            max-width: 480px;
+        }
+
+        .quote-icon {
+            color: var(--neon-green);
+            font-size: 1.8rem;
+            line-height: 1;
+            font-family: serif;
+        }
+
+        /* Brand logo pulse green icon */
+        .pulse-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-green);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: rgba(59, 240, 11, 0.1);
+        }
+
+        .pulse-wave {
+            stroke: var(--neon-green);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            width: 26px;
+            height: 20px;
+        }
+
+        /* Input Controls */
+        .form-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #e2e8f0;
+            margin-bottom: 0.5rem;
+        }
+
+        .input-group-custom {
+            position: relative;
+            background-color: var(--input-bg);
+            border: 1px solid var(--input-border);
+            border-radius: 0.75rem;
+            transition: all 0.25s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group-custom:focus-within {
+            border-color: var(--neon-green);
+            box-shadow: 0 0 0 3px rgba(59, 240, 11, 0.15);
+        }
+
+        .input-icon {
+            padding: 0.75rem 0 0.75rem 1rem;
+            color: var(--text-muted-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .form-control-custom {
+            background: transparent !important;
+            border: 0 !important;
+            box-shadow: none !important;
+            color: #ffffff !important;
+            padding: 0.8rem 1rem;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        .form-control-custom::placeholder {
+            color: #4b5a6a;
+        }
+
+        .password-toggle {
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            color: var(--text-muted-gray);
+            transition: color 0.15s ease;
+        }
+
+        .password-toggle:hover {
+            color: #ffffff;
+        }
+
+        /* Checkbox customization */
+        .form-check-input {
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            cursor: pointer;
+        }
+
+        .form-check-input:checked {
+            background-color: var(--neon-green);
+            border-color: var(--neon-green);
+        }
+
+        .form-check-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 240, 11, 0.2);
+            border-color: var(--neon-green);
+        }
+
+        .form-check-label {
+            font-size: 0.9rem;
+            color: #cbd5e1;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /* Buttons and links */
+        .forgot-link {
+            color: var(--neon-green);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: opacity 0.15s ease;
+        }
+
+        .forgot-link:hover {
+            opacity: 0.85;
+            text-decoration: underline;
+        }
+
+        .btn-signin {
+            background-color: var(--neon-green);
+            color: #000000;
+            font-weight: 600;
+            border: none;
+            padding: 0.85rem 1.5rem;
+            border-radius: 0.75rem;
+            transition: all 0.25s ease;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            width: 100%;
+        }
+
+        .btn-signin:hover {
+            background-color: #32d609;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(59, 240, 11, 0.3);
+        }
+
+        .btn-signin:active {
+            transform: translateY(1px);
+        }
+
+        /* Social SSB login buttons */
+        .btn-social {
+            background-color: transparent;
+            border: 1px solid var(--input-border);
+            color: #ffffff;
+            border-radius: 0.75rem;
+            padding: 0.75rem 1rem;
+            width: 100%;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+            transition: all 0.2s ease;
+            margin-bottom: 0.75rem;
+        }
+
+        .btn-social:hover {
+            background-color: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+        }
+
+        .btn-social img {
+            width: 18px;
+            height: 18px;
+        }
+
+        .divider-container {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 1.5rem 0;
+            color: var(--text-muted-gray);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .divider-container::before,
+        .divider-container::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .divider-container:not(:empty)::before {
+            margin-right: .75em;
+        }
+
+        .divider-container:not(:empty)::after {
+            margin-left: .75em;
+        }
+
+        .signup-text {
+            font-size: 0.9rem;
+            color: var(--text-muted-gray);
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .signup-link {
+            color: var(--neon-green);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .signup-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Brand green text highlights */
+        .color-pulse {
+            color: var(--neon-green);
+        }
+
+        /* Background grid overlays */
+        .bg-grid {
+            background-image: linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px);
+            background-size: 40px 40px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        /* Athlete Image Overlay Column */
+        .hero-left-column {
+            position: relative;
+            background: linear-gradient(135deg, rgba(8, 11, 14, 0.9) 30%, rgba(8, 11, 14, 0.4) 100%);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .hero-bg-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.5; /* Overlay effect to allow neon & text popup */
+            mix-blend-mode: luminosity;
+            z-index: -1;
+        }
+
+        .accent-polygon-green {
+            position: absolute;
+            right: -10px;
+            top: 10%;
+            bottom: 10%;
+            width: 250px;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.65;
+        }
+
+        /* Bottom indicators */
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            color: #cbd5e1;
+        }
+
+        .status-icon-wrapper {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: rgba(59, 240, 11, 0.06);
+            border: 1px solid rgba(59, 240, 11, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neon-green);
+            font-size: 1.1rem;
+        }
+
+        /* Extra utilities styling */
+        .logo-text-title {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            line-height: 1;
+            margin: 0;
+        }
+
+        .logo-text-subtitle {
+            font-weight: 500;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: var(--text-muted-gray);
+            text-transform: uppercase;
+            margin: 0;
+            margin-top: 2px;
+        }
+
+        .ratings-stars {
+            color: var(--neon-green);
+            display: flex;
+            gap: 4px;
+            font-size: 0.85rem;
+            margin-top: 0.75rem;
+        }
+
+        @media (max-width: 991.98px) {
+            .hero-left-column {
+                min-height: 350px;
+                margin-bottom: 2rem;
+            }
+            .testimonial-card {
+                margin-top: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Grid lines in background -->
+<div class="bg-grid"></div>
+
+<div class="container py-4 py-lg-5 min-vh-100 d-flex flex-column justify-content-center">
+    <!-- Unified Premium Dual-Pane Layout Card -->
+    <div class="glass-panel overflow-hidden border-0 shadow-lg w-100 flex-grow-1">
+        <div class="row g-0 h-100 align-items-stretch">
+
+            <!-- Left Branding & Info Column -->
+            <div class="col-lg-6 d-flex">
+                <div class="hero-left-column w-100 p-4 p-md-5 d-flex flex-column justify-content-between rounded-0 border-0">
+                    <!-- Athlete background image loaded via database/dynamic path configuration -->
+                    <!-- Note: For thymeleaf dynamic imagery you can configure th:src="@{/images/gym_athlete.png}" -->
+                    <img class="hero-bg-image"
+                         src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=1200&auto=format&fit=crop"
+                         alt="Muscular Athlete holding Dumbbell"
+                         referrerpolicy="no-referrer">
+
+                    <!-- Custom Decorative Glowing Vector Path mirroring screenshot border -->
+                    <svg class="accent-polygon-green d-none d-md-block" viewBox="0 0 100 200" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 90 10 L 40 85 L 90 160" stroke="#3bf00b" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" style="filter: drop-shadow(0px 0px 5px #3bf00b);" />
+                    </svg>
+
+                    <!-- Top Segment: Header -->
+                    <div class="d-flex align-items-center mb-5">
+                        <div class="pulse-logo me-3">
+                            <svg class="pulse-wave" viewBox="0 0 24 16">
+                                <path d="M2.5 8h4.5l2-6 3.5 12 2-8 1.5 4.5 1 1.5h4.5" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="logo-text-title space-grotesk text-white">ROCK<span class="color-pulse">FIT</span></h1>
+                            <p class="logo-text-subtitle">Elite Management</p>
+                        </div>
+                    </div>
+
+                    <!-- Middle Segment: Hero Slogans & Highlights -->
+                    <div class="my-auto py-3">
+                        <h2 class="display-5 space-grotesk text-white font-weight-bold mb-3 text-uppercase" style="letter-spacing: -0.01em; font-weight: 700; line-height: 1.15;">
+                            Powering<br>
+                            <span class="color-pulse">Stronger Gyms</span><br>
+                            Every Day
+                        </h2>
+                        <p class="lead text-white-50 mb-5 fs-6" style="max-width: 440px;">
+                            Manage members, track performance, and grow your fitness business smarter.
+                        </p>
+
+                        <!-- Highlights Lists -->
+                        <div class="features-list">
+                            <!-- Analytics -->
+                            <div class="feature-item">
+                                <div class="feature-icon-wrapper">
+                                    <i class="bi bi-bar-chart-fill"></i>
+                                </div>
+                                <div>
+                                    <h3 class="feature-title">Smart Analytics</h3>
+                                    <p class="feature-desc">Real-time insights for better decisions.</p>
+                                </div>
+                            </div>
+
+                            <!-- Member Management -->
+                            <div class="feature-item">
+                                <div class="feature-icon-wrapper">
+                                    <i class="bi bi-people-fill"></i>
+                                </div>
+                                <div>
+                                    <h3 class="feature-title">Member Management</h3>
+                                    <p class="feature-desc">Organize and engage your members.</p>
+                                </div>
+                            </div>
+
+                            <!-- Attendance Tracking -->
+                            <div class="feature-item">
+                                <div class="feature-icon-wrapper">
+                                    <i class="bi bi-calendar2-check-fill"></i>
+                                </div>
+                                <div>
+                                    <h3 class="feature-title">Attendance Tracking</h3>
+                                    <p class="feature-desc">Track every workout. Boost consistency.</p>
+                                </div>
+                            </div>
+
+                            <!-- Payment & Billing -->
+                            <div class="feature-item">
+                                <div class="feature-icon-wrapper">
+                                    <i class="bi bi-credit-card-fill"></i>
+                                </div>
+                                <div>
+                                    <h3 class="feature-title">Payment & Billing</h3>
+                                    <p class="feature-desc">Simplify payments and reduce dues.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bottom Segment: Testimonial -->
+                    <div class="testimonial-card">
+                        <div class="d-flex align-items-start">
+                            <span class="quote-icon me-2">“</span>
+                            <div>
+                                <p class="text-white-50 mb-1 italic fs-6" style="line-height: 1.5; font-style: italic;">
+                                    Iron Pulse has transformed the way we manage our gym. Everything in one place!
+                                </p>
+                                <div class="d-flex align-items-center justify-content-between flex-wrap">
+                                    <span class="ratings-stars">
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                    </span>
+                                    <span class="fs-7 color-pulse font-weight-medium mt-1">– FitCore Gym</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Right Login Form Column -->
+            <!--<div class="col-lg-6 d-flex">
+                <div class="w-100 p-4 p-md-5 d-flex flex-column justify-content-center position-relative border-start border-white border-opacity-10 bg-black bg-opacity-10">
+-->
+            <div class="col-lg-6 d-flex">
+                <div class="w-100 p-4 p-md-5 d-flex flex-column justify-content-center position-relative  border-start border-white border-opacity-10 bg-black bg-opacity-10">
+                    <!-- Form Title Block -->
+                    <div class="mb-4 text-center">
+                        <h2 class="space-grotesk text-white fs-1 mb-2">Welcome <span class="color-pulse">Back!</span></h2>
+                        <p class="text-white-50 fs-6">Sign in to your account to continue</p>
+                    </div>
+
+                    <!-- Thymeleaf Action Form binding dynamically if credentials exist -->
+                    <!-- In Spring Boot, map your Login POST handler endpoint with th:action="@{/login}" th:object="${loginRequest}" -->
+                    <form th:action="@{/login}" method="POST" class="needs-validation" novalidate>
+                       <!-- <p style="color:red;font-size:30px;">
+                            FORM STARTS HERE
+                        </p>-->
+
+                        <!-- Email Input Container -->
+                        <div class="mb-3">
+                            <label for="emailInput" class="form-label">Email Address</label>
+                            <div class="input-group-custom">
+                                <div class="input-icon">
+                                    <i class="bi bi-envelope"></i>
+                                </div>
+                                <input type="email"
+                                       id="emailInput"
+                                       name="username"
+                                       th:value="${param.error != null ? '' : username}"
+                                       class="form-control-custom"
+                                       placeholder="Enter your email"
+                                       required
+                                       autocomplete="email">
+                            </div>
+                        </div>
+
+                        <!-- Password Input Container -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label for="passwordInput" class="form-label m-0">Password</label>
+                                <a href="#" class="forgot-link">Forgot Password?</a>
+                            </div>
+                            <div class="input-group-custom">
+                                <div class="input-icon">
+                                    <i class="bi bi-lock"></i>
+                                </div>
+                                <input type="password"
+                                       id="passwordInput"
+                                       name="password"
+                                       class="form-control-custom"
+                                       placeholder="Enter your password"
+                                       required>
+                                <div class="password-toggle" id="passwordToggleBtn">
+                                    <i class="bi bi-eye" id="toggleIcon"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error Toast / Alerts generated via Thymeleaf Parameter checks -->
+                        <div th:if="${param.error}" class="alert alert-danger py-2 px-3 border-0 bg-opacity-10 text-white rounded-3 mb-4 fs-7" style="background-color: rgba(220, 53, 69, 0.15)">
+                            <i class="bi bi-exclamation-triangle-fill me-2 color-pulse"></i> Invalid email address or credentials.
+                        </div>
+
+                        <!-- Logout indicator if triggered -->
+                        <div th:if="${param.logout}" class="alert alert-success py-2 px-3 border-0 bg-opacity-10 text-white rounded-3 mb-4 fs-7" style="background-color: rgba(59, 240, 11, 0.15)">
+                            <i class="bi bi-check-circle-fill me-2 color-pulse"></i> Successfully logged out.
+                        </div>
+
+                        <!-- Remember Me Widget Group -->
+                        <div class="form-check d-flex align-items-center mb-4">
+                            <input class="form-check-input me-2" type="checkbox" id="rememberMeInput" name="remember-me">
+                            <label class="form-check-label" for="rememberMeInput">
+                                Remember me
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" class="btn-signin space-grotesk mt-2">
+                            <span>Sign In</span>
+                            <i class="bi bi-arrow-right"></i>
+                        </button>
+
+                    </form>
+
+                    <!-- OR Breakpoint -->
+                    <div class="divider-container">OR</div>
+
+                    <!-- SSO Connect Action Handlers -->
+                    <div>
+                        <!-- Continue Google -->
+                        <form th:action="@{/oauth2/authorization/google}" method="GET" class="d-inline">
+                            <button type="submit" class="btn-social">
+                                <img src="https://lh3.googleusercontent.com/COgYg5dfv4OCvQ7968DInM69-vYvFofem94K9K-Zg8vTiGfBNZ0XgU6fFzE" alt="Google logo" referrerpolicy="no-referrer">
+                                <span>Continue with Google</span>
+                            </button>
+                        </form>
+
+                        <!-- Continue Microsoft -->
+                        <button type="button" class="btn-social">
+                            <svg viewBox="0 0 23 23" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
+                                <path fill="#f35325" d="M1 1h10v10H1z"/>
+                                <path fill="#00a4ef" d="M12 1h10v10H12z"/>
+                                <path fill="#803f97" d="M1 12h10v10H1z"/>
+                                <path fill="#feec32" d="M12 12h10v10H12z"/>
+                            </svg>
+                            <span>Continue with Microsoft</span>
+                        </button>
+                    </div>
+
+                    <!-- Sign Up Footer -->
+                    <p class="signup-text">
+                        Don't have an account? <a href="#" class="signup-link">Sign Up</a>
+                    </p>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Footer Segment -->
+    <hr class="border-secondary opacity-10 my-4">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+        <p class="text-white-50 m-0 fs-7 text-center text-md-start">
+            &copy; <span id="currentYear">2026</span> <span class="color-pulse font-weight-medium">Iron Pulse</span> Elite Management. All rights reserved.
+        </p>
+
+        <div class="d-flex gap-4">
+            <!-- Bottom Badges -->
+            <div class="status-badge">
+                <div class="status-icon-wrapper">
+                    <i class="bi bi-shield-lock-fill"></i>
+                </div>
+                <div>
+                    <div class="font-weight-medium text-white fs-7">Secure & Protected</div>
+                    <div class="text-white-50 fs-8">256-bit SSL encryption</div>
+                </div>
+            </div>
+
+            <div class="status-badge">
+                <div class="status-icon-wrapper">
+                    <i class="bi bi-headset"></i>
+                </div>
+                <div>
+                    <div class="font-weight-medium text-white fs-7">24/7 Support</div>
+                    <div class="text-white-50 fs-8">We're here to help</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BS 5 JS Bundle & Custom Script -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+<script>
+    // Password Show/Hide Toggle Implementation
+    const toggleBtn = document.getElementById('passwordToggleBtn');
+    const passwordInput = document.getElementById('passwordInput');
+    const icon = document.getElementById('toggleIcon');
+
+    if(toggleBtn && passwordInput && icon) {
+        toggleBtn.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+
+            // Toggle between eye and eye-slash
+            icon.className = type === 'password' ? 'bi bi-eye' : 'bi bi-eye-slash';
+        });
+    }
+
+    // Auto Year Setter
+    const yearSpan = document.getElementById('currentYear');
+    if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+    }
+</script>
+</body>
+</html>
